@@ -1,0 +1,23 @@
+À partir de votre dossier backend , exécutez la commande de terminal npm init pour initialiser votre projet. 
+Créez un fichier server.js à l'intérieur de votre dossier backend . Il contiendra votre premier serveur Node.
+
+
+npm install -g nodemon  (start : nodemon server)
+npm install express
+npm install mongoose
+npm install mongoose-unique-validator
+npm install bcrypt
+npm install jsonwebtoken
+npm install multer
+
+///////////////////////////////////////////////////
+// Front start
+///////////////////////////////////////////////////
+cd frontend
+npm install
+npm run start
+
+///////////////////////////////////////////////////
+// Back start
+///////////////////////////////////////////////////
+nodemon server
