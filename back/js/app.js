@@ -1,5 +1,6 @@
 const express   = require('express');
 const mongoose  = require('mongoose');
+let isStarted   = false;
 
 // ===================================================
 //                  Database connection
@@ -10,13 +11,10 @@ function databaseConnet(irl)
     {
         mongoose.connect(irl, {useNewUrlParser: true, useUnifiedTopology: true})
         .then(() => console.log('Connection to Piiquante Database OK'))
-        .catch((err) => console.log('Connection to Piiquante Database FAILED ! : ' + err)); 
+        .catch((err) => console.log('Connection to Piiquante Database FAILED ! ' + err)); 
 
-        return;
-    }
-
-    throw("Piiquante Database Connection : Wrong irl = " + irl);
-    
+        isStarted = true;
+    } 
 }
 
 // ===================================================
@@ -34,23 +32,21 @@ function mainRun()
     {
         console.log(err);
     }
-
 }
 
 // ===================================================
-//                  App Creation
+//                 Express App Creation
 // ===================================================
 const app = express();
 // Avec ceci, Express prend toutes les requêtes qui ont comme Content-Type  application/json  et met à disposition leur  body  directement sur l'objet req
 app.use(express.json());
 
 // ===================================================
-//                  Middlewares
-//
+//                     Middlewares
 // ===================================================
 // le middleware ne prend pas d'adresse en premier paramètre, 
 // afin de s'appliquer à toutes les routes. 
-// Cela permettra à toutes les demandes de toutes les origines d'accéder à votre API.
+// Cela permettra à toutes les demandes de toutes les origines d'accéder à l' API.
 // ===================================================
 app.use((req, res, next) => 
 {
