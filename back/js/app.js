@@ -1,48 +1,27 @@
-const express   = require('express');
-const mongoose  = require('mongoose');
-let isStarted   = false;
+const express           = require('express');
+const mongoose          = require('mongoose');
+const User              = require('./models/user');
 
-// ===================================================
-//                  Database connection
-// ===================================================
-function databaseConnet(irl)
-{
-    if (irl !== '')
-    {
-        mongoose.connect(irl, {useNewUrlParser: true, useUnifiedTopology: true})
-        .then(() => console.log('Connection to Piiquante Database OK'))
-        .catch((err) => console.log('Connection to Piiquante Database FAILED ! ' + err)); 
+const userRoutes        = require('./routes/user');
+const sauceRoutes       = require('./routes/sauce');
 
-        isStarted = true;
-    } 
-}
 
-// ===================================================
-//                  Main Run
-// ===================================================
-function mainRun()
-{
-    let irl = 'mongodb+srv://ZiggyHand:zigman2014@cluster0.znqej.mongodb.net/myFirstDatabase?retryWrites=true&w=majority';
+const url               = 'mongodb+srv://ZiggyHand:zigman2014@cluster0.znqej.mongodb.net/Piiquante?retryWrites=true&w=majority';
 
-    try
-    {
-        databaseConnet(irl);
-    }
-    catch(err)
-    {
-        console.log(err);
-    }
-}
+
 
 // ===================================================
 //                 Express App Creation
 // ===================================================
 const app = express();
-// Avec ceci, Express prend toutes les requêtes qui ont comme Content-Type  application/json  et met à disposition leur  body  directement sur l'objet req
+// Ici, Express prend toutes les requêtes qui ont comme Content-Type  application/json  
+// et met à disposition leur  body  directement sur l'objet req
 app.use(express.json());
 
 // ===================================================
 //                     Middlewares
+// ===================================================
+
 // ===================================================
 // le middleware ne prend pas d'adresse en premier paramètre, 
 // afin de s'appliquer à toutes les routes. 
@@ -60,6 +39,40 @@ app.use((req, res, next) =>
 });
 
 // ===================================================
-mainRun();
+//                     signUp
+// ===================================================
+/*app.post('/api/auth/signup', (req, res, next) => 
+{
+    console.log("signUp call");
+    console.log(req.body);
+    next();
+});*/
+
+app.post('/api/auth/signup', userRoutes);
+
+// ===================================================
+
+// ===================================================
+//                  Database connection
+// ===================================================
+function databaseConnet()
+{
+    if (url !== '')
+    {
+        mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, keepAlive: true, keepAliveInitialDelay: 300000})
+        .then(() => console.log('Connection to Piiquante Database OK'))
+        .catch((err) => console.log('Connection to Piiquante Database FAILED ! ' + err)); 
+
+        //Get the default connection
+        var db = mongoose.connection;
+        //Bind connection to error event (to get notification of connection errors)
+        db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+    } 
+}
+
+// ===================================================
+//                  Main Run
+// ===================================================
+databaseConnet();
 
 module.exports = app;

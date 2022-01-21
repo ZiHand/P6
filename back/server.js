@@ -1,5 +1,6 @@
 const http  = require('http');
 const app   = require('./js/app');
+const _port = '3000';
 
 // ===================================================
 //                  normalizePort
@@ -52,7 +53,7 @@ const errorHandler = error =>
 // ===================================================
 //                  Server Wake
 // ===================================================
-const port = normalizePort(process.env.PORT ||'3000');
+const port = normalizePort(process.env.PORT || _port);
 app.set('port', port);
 
 const server = http.createServer(app);
