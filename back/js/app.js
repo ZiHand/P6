@@ -39,16 +39,10 @@ app.use((req, res, next) =>
 });
 
 // ===================================================
-//                     signUp
+//                     Routes
 // ===================================================
-/*app.post('/api/auth/signup', (req, res, next) => 
-{
-    console.log("signUp call");
-    console.log(req.body);
-    next();
-});*/
-
 app.post('/api/auth/signup', userRoutes);
+app.post('/api/auth/login', userRoutes);
 
 // ===================================================
 
