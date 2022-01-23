@@ -1,10 +1,11 @@
 const express           = require('express');
 const mongoose          = require('mongoose');
-const User              = require('./models/user');
+const path              = require('path');
+
 
 const userRoutes        = require('./routes/user');
 const sauceRoutes       = require('./routes/sauce');
-
+const auth              = require('./middleWare/auth');
 
 const url               = 'mongodb+srv://ZiggyHand:zigman2014@cluster0.znqej.mongodb.net/Piiquante?retryWrites=true&w=majority';
 
@@ -41,8 +42,23 @@ app.use((req, res, next) =>
 // ===================================================
 //                     Routes
 // ===================================================
+const imgUrl = path.join(__dirname, '/../../back/images');
+console.log(imgUrl);
+//app.use('/images', express.static(imgUrl));
+//app.use(express.static('images'));
+app.use('/images', express.static("images"));
+//app.use(express.static(imgUrl));
+
 app.post('/api/auth/signup', userRoutes);
 app.post('/api/auth/login', userRoutes);
+
+app.get('/api/sauces', sauceRoutes);
+app.get('/api/sauces/:id', sauceRoutes);
+app.post('/api/sauces', sauceRoutes);
+app.put('/api/sauces/:id', sauceRoutes);
+app.delete('/api/sauces/:id', sauceRoutes);
+app.post('/api/sauces/:id/like', sauceRoutes);
+
 
 // ===================================================
 
