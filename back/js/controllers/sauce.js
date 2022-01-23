@@ -21,15 +21,8 @@ exports.addSauce = (req, res, next) =>
 
     // Register to DB
     sauce.save()
-        .then(() =>
-        {
-            res.status(201).json({ message: 'Sauce added !'});
-        })
-        .catch(error =>
-        {
-            console.log("Save error : " + error);
-            res.status(400).json({ error }) // ?? or message ?
-        });
+        .then(() => {res.status(201).json({ message: 'Sauce added !'});})
+        .catch(error => {res.status(400).json({ error })});
 }
 
 // ===================================================
@@ -39,11 +32,8 @@ exports.getSauces = (req, res, next) =>
 {
     console.log("getSauce");
     Sauce.find()
-    .then(things => 
-    {
-        res.status(200).json(things)
-    })
-    .catch(error => res.status(400).json({ error }));
+        .then(sauces => {res.status(200).json(sauces)})
+        .catch(error => res.status(400).json({ error }));
 }
 
 // ===================================================
@@ -61,7 +51,6 @@ exports.getSauce = (req, res, next) =>
 // ===================================================
 exports.updateSauce = (req, res, next) => 
 {
-    console.log(req.params.id);
     let sauce = null;
 
     if (!req.file)
@@ -76,7 +65,6 @@ exports.updateSauce = (req, res, next) =>
     }
 
     sauce._id = req.params.id;
-    console.log(sauce);
 
     Sauce.updateOne({ _id: req.params.id }, sauce)
         .then(() => res.status(200).json({ message: 'Objet modifié !'}))
@@ -96,5 +84,59 @@ exports.deleteSauce = (req, res, next) =>
 // ===================================================
 exports.likeSauce = (req, res, next) => 
 {
-    return res.status(400).json({ message: 'Like sauce error !'});
+    console.log(req.body);
+    console.log(req.params);
+    Sauce.findOne({ _id: req.params.id })
+        .then(sauce => 
+        {
+            if (!sauce)
+            {
+                return res.status(401).json({ error: 'Sauce not found !' });
+            }
+
+            if (req.body.like > 0)
+            {
+                // Check if user have alredy liked ->then
+                sauce.likes += 1;
+                sauce.usersLiked.push(req.body.userId);
+            }
+            else if (req.body.like < 0)
+            {
+                // Check if user have alredy disliked ->then
+                sauce.dislikes += 1;
+                sauce.usersDisliked.push(req.body.userId);
+            }
+            else
+            {
+                // Check if user have alredy liked / disliked ->then
+                sauce.likes <= 0 ? sauce.likes = 0 : sauce.likes -= 1;
+                sauce.dislikes <= 0 ? sauce.dislikes = 0 : sauce.dislikes -= 1;
+
+                for( var i = 0; i < sauce.usersLiked; i++)
+                { 
+                    if ( sauce.usersLiked[i] === req.body.userId) 
+                    { 
+                        sauce.usersLiked.splice(i, 1); 
+                        break;
+                    }
+                }
+
+                for( var i = 0; i < sauce.usersDisliked; i++)
+                { 
+                    if ( sauce.usersDisliked[i] === req.body.userId) 
+                    { 
+                        sauce.usersDisliked.splice(i, 1); 
+                        break;
+                    }
+                }
+            }
+
+            console.log(sauce);
+
+            // Update
+            Sauce.updateOne({ _id: req.params.id }, sauce)
+                .then(() => res.status(200).json({ message: 'Like sauce done !'}))
+                .catch(error => res.status(400).json({ error }));
+        })
+    .catch(error => res.status(404).json({ error }));
 }
