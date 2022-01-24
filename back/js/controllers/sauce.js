@@ -98,7 +98,6 @@ exports.likeSauce = (req, res, next) =>
                 // Check if user have alredy liked ->then
                 if (!sauce.usersLiked.find(element => element === req.body.userId))
                 {
-                    sauce.likes += 1;
                     sauce.usersLiked.push(req.body.userId);
                     shouldUpdate = true;
                 }
@@ -108,7 +107,6 @@ exports.likeSauce = (req, res, next) =>
                 // Check if user have alredy disliked ->then
                 if (!sauce.usersDisliked.find(element => element === req.body.userId))
                 {
-                    sauce.dislikes += 1;
                     sauce.usersDisliked.push(req.body.userId);
                     shouldUpdate = true;
                 }
@@ -120,7 +118,6 @@ exports.likeSauce = (req, res, next) =>
                 {
                     if (sauce.usersLiked[i] === req.body.userId) 
                     { 
-                        sauce.likes <= 0 ? sauce.likes = 0 : sauce.likes--;
                         sauce.usersLiked.splice(i, 1);
                         shouldUpdate = true;
                         break;
@@ -131,13 +128,15 @@ exports.likeSauce = (req, res, next) =>
                 { 
                     if ( sauce.usersDisliked[i] === req.body.userId) 
                     { 
-                        sauce.dislikes <= 0 ? sauce.dislikes = 0 : sauce.dislikes--;
                         sauce.usersDisliked.splice(i, 1);
                         shouldUpdate = true;
                         break;
                     }
                 }
             }
+
+            sauce.likes     = sauce.usersLiked.length;
+            sauce.dislikes  = sauce.usersDisliked.length;
 
             // Update
             if (shouldUpdate)

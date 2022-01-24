@@ -1,12 +1,9 @@
 const express           = require('express');
 const mongoose          = require('mongoose');
-const path              = require('path');
-
-
 const userRoutes        = require('./routes/user');
 const sauceRoutes       = require('./routes/sauce');
-const auth              = require('./middleWare/auth');
 
+// should not been there
 const url               = 'mongodb+srv://ZiggyHand:zigman2014@cluster0.znqej.mongodb.net/Piiquante?retryWrites=true&w=majority';
 
 
@@ -42,12 +39,7 @@ app.use((req, res, next) =>
 // ===================================================
 //                     Routes
 // ===================================================
-const imgUrl = path.join(__dirname, '/../../back/images');
-console.log(imgUrl);
-//app.use('/images', express.static(imgUrl));
-//app.use(express.static('images'));
 app.use('/images', express.static("images"));
-//app.use(express.static(imgUrl));
 
 app.post('/api/auth/signup', userRoutes);
 app.post('/api/auth/login', userRoutes);
