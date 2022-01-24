@@ -73,7 +73,9 @@ exports.updateSauce = (req, res, next) =>
 // ===================================================
 exports.deleteSauce = (req, res, next) => 
 {
-    return res.status(400).json({ message: 'Deleting sauce error !'});
+    Sauce.deleteOne({ _id: req.params.id })
+        .then(() => res.status(200).json({ message: 'Sauce deleted !'}))
+        .catch(error => res.status(400).json({ error }));
 }
 
 // ===================================================
@@ -142,8 +144,6 @@ exports.likeSauce = (req, res, next) =>
                     }
                 }
             }
-
-            
 
             // Update
             if (shouldUpdate)
