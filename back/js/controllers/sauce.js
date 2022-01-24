@@ -5,8 +5,6 @@ const Sauce = require('../models/sauce');
 // ===================================================
 exports.addSauce = (req, res, next) => 
 {
-    console.log("addSauce");
-
     if (!req.body.sauce || !req.file.path) 
     {
         return res.status(400).json({ message: 'Creating sauce error !'});
@@ -30,7 +28,6 @@ exports.addSauce = (req, res, next) =>
 // ===================================================
 exports.getSauces = (req, res, next) => 
 {
-    console.log("getSauce");
     Sauce.find()
         .then(sauces => {res.status(200).json(sauces)})
         .catch(error => res.status(400).json({ error }));
@@ -84,8 +81,7 @@ exports.deleteSauce = (req, res, next) =>
 // ===================================================
 exports.likeSauce = (req, res, next) => 
 {
-    console.log(req.body);
-    console.log(req.params);
+    console.log("likeSauce");
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => 
         {
@@ -94,49 +90,72 @@ exports.likeSauce = (req, res, next) =>
                 return res.status(401).json({ error: 'Sauce not found !' });
             }
 
+            let shouldUpdate = false;
+
             if (req.body.like > 0)
             {
+                console.log("Like");
                 // Check if user have alredy liked ->then
-                sauce.likes += 1;
-                sauce.usersLiked.push(req.body.userId);
+                if (!sauce.usersLiked.find(element => element === req.body.userId))
+                {
+                    sauce.likes += 1;
+                    sauce.usersLiked.push(req.body.userId);
+                    shouldUpdate = true;
+                }
             }
             else if (req.body.like < 0)
             {
+                console.log("Dislike");
                 // Check if user have alredy disliked ->then
-                sauce.dislikes += 1;
-                sauce.usersDisliked.push(req.body.userId);
+                if (!sauce.usersDisliked.find(element => element === req.body.userId))
+                {
+                    sauce.dislikes += 1;
+                    sauce.usersDisliked.push(req.body.userId);
+                    shouldUpdate = true;
+                }
             }
             else
             {
+                console.log("Remove Like / Dislike");
                 // Check if user have alredy liked / disliked ->then
-                sauce.likes <= 0 ? sauce.likes = 0 : sauce.likes -= 1;
-                sauce.dislikes <= 0 ? sauce.dislikes = 0 : sauce.dislikes -= 1;
 
-                for( var i = 0; i < sauce.usersLiked; i++)
-                { 
-                    if ( sauce.usersLiked[i] === req.body.userId) 
+                for(var i = 0; i < sauce.usersLiked.length; i++)
+                {
+                    console.log("sauce.usersLiked[i]");
+                    if (sauce.usersLiked[i] === req.body.userId) 
                     { 
-                        sauce.usersLiked.splice(i, 1); 
+                        sauce.likes <= 0 ? sauce.likes = 0 : sauce.likes--;
+                        sauce.usersLiked.splice(i, 1);
+                        shouldUpdate = true;
                         break;
                     }
                 }
 
-                for( var i = 0; i < sauce.usersDisliked; i++)
+                for( var i = 0; i < sauce.usersDisliked.length; i++)
                 { 
                     if ( sauce.usersDisliked[i] === req.body.userId) 
                     { 
-                        sauce.usersDisliked.splice(i, 1); 
+                        sauce.dislikes <= 0 ? sauce.dislikes = 0 : sauce.dislikes--;
+                        sauce.usersDisliked.splice(i, 1);
+                        shouldUpdate = true;
                         break;
                     }
                 }
             }
 
-            console.log(sauce);
+            
 
             // Update
-            Sauce.updateOne({ _id: req.params.id }, sauce)
-                .then(() => res.status(200).json({ message: 'Like sauce done !'}))
-                .catch(error => res.status(400).json({ error }));
+            if (shouldUpdate)
+            {
+                Sauce.updateOne({ _id: req.params.id }, sauce)
+                    .then(() => res.status(200).json({ message: 'Like sauce done !'}))
+                    .catch(error => res.status(400).json({ error }));
+            }
+            else
+            {
+                throw("Unable to change likes / unlikes");
+            }            
         })
-    .catch(error => res.status(404).json({ error }));
+    .catch(error => res.status(401).json({ error }));
 }
