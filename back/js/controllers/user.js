@@ -2,11 +2,11 @@ const User          = require('../models/user');
 var jwt             = require('jsonwebtoken');
 const bcrypt        = require("bcrypt");
 var CryptoJS        = require("crypto-js");
-secretKey           = "Hypolite_Est_Un_Chien_Qui_Mange_Trop!";
+const secretKey     = "Hypolite_Est_Un_Chien_Qui_Mange_Trop!";
 const saltRounds    = 13;
 
 // ===================================================
-// retreiveUserEmail
+// retreiveUserEmail // NOT USED FOR NOW
 // ===================================================
 function retreiveUserEmail(email)
 {
@@ -32,7 +32,6 @@ exports.createUser = (req, res, next) =>
         return res.status(400).json({ message: 'Creating user error !'});
     }
 
-    //delete req.body._id;
     const user = new User({...req.body});
 
     // Encrypt
@@ -40,9 +39,9 @@ exports.createUser = (req, res, next) =>
     user.password   = bcrypt.hashSync(req.body.password, saltRounds);
 
     // Check DB if user already exist
-    if (isUserExist(user))
+    if (isUserExist(user)) // Not used for now as Unique is used.
     {
-        return res.status(400).json({ message: 'User already registered ! Please Login.'});
+        return res.status(201).json({ message: 'User already registered ! Please Login.'});
     }
 
     // Register to DB
@@ -51,13 +50,8 @@ exports.createUser = (req, res, next) =>
         {
             res.status(201).json({ message: 'User registered !'});
         })
-        .then(() =>
-        {
-            console.log(retreiveUserEmail(user));
-        })
         .catch(error =>
         {
-            console.log("Save error : " + error);
             res.status(400).json({ error }) // ?? or message ?
         });
 }
@@ -92,7 +86,7 @@ exports.logUser = (req, res, next) =>
                         return res.status(401).json({ error: 'Incorrect pasword !' });
                     }
                 
-                    res.status(200).json({userId: user.email, token: jwt.sign({ userId: user.email }, secretKey, { expiresIn: '24h' })});
+                    res.status(201).json({userId: user.email, token: jwt.sign({ userId: user.email }, secretKey, { expiresIn: '24h' })});
                 })
               .catch(error => res.status(500).json({ error }));
         })

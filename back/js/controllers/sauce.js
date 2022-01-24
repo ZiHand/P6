@@ -11,7 +11,7 @@ exports.addSauce = (req, res, next) =>
     }
 
     const sauce         = new Sauce(JSON.parse(req.body.sauce));
-    sauce.imageUrl      = req.file.path;
+    sauce.imageUrl      = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
     sauce.likes         = 0;
     sauce.dislikes      = 0;
     sauce.usersLiked    = 0;
@@ -58,7 +58,7 @@ exports.updateSauce = (req, res, next) =>
     else
     {
         sauce           = new Sauce(JSON.parse(req.body.sauce));
-        sauce.imageUrl  = req.file.path;
+        sauce.imageUrl  = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
     }
 
     sauce._id = req.params.id;
@@ -83,20 +83,18 @@ exports.deleteSauce = (req, res, next) =>
 // ===================================================
 exports.likeSauce = (req, res, next) => 
 {
-    console.log("likeSauce");
     Sauce.findOne({ _id: req.params.id })
         .then(sauce => 
         {
             if (!sauce)
             {
-                return res.status(401).json({ error: 'Sauce not found !' });
+                return res.status(404).json({ error: 'Sauce not found !' });
             }
 
             let shouldUpdate = false;
 
             if (req.body.like > 0)
             {
-                console.log("Like");
                 // Check if user have alredy liked ->then
                 if (!sauce.usersLiked.find(element => element === req.body.userId))
                 {
@@ -107,7 +105,6 @@ exports.likeSauce = (req, res, next) =>
             }
             else if (req.body.like < 0)
             {
-                console.log("Dislike");
                 // Check if user have alredy disliked ->then
                 if (!sauce.usersDisliked.find(element => element === req.body.userId))
                 {
@@ -118,12 +115,9 @@ exports.likeSauce = (req, res, next) =>
             }
             else
             {
-                console.log("Remove Like / Dislike");
                 // Check if user have alredy liked / disliked ->then
-
                 for(var i = 0; i < sauce.usersLiked.length; i++)
                 {
-                    console.log("sauce.usersLiked[i]");
                     if (sauce.usersLiked[i] === req.body.userId) 
                     { 
                         sauce.likes <= 0 ? sauce.likes = 0 : sauce.likes--;
