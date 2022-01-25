@@ -41,7 +41,7 @@ exports.createUser = (req, res, next) =>
     // Check DB if user already exist
     if (isUserExist(user)) // Not used for now as Unique is used.
     {
-        return res.status(201).json({ message: 'User already registered ! Please Login.'});
+        return res.status(409).json({ message: 'User already registered ! Please Login.'});
     }
 
     // Register to DB
@@ -52,7 +52,7 @@ exports.createUser = (req, res, next) =>
         })
         .catch(error =>
         {
-            res.status(400).json({ error }) // ?? or message ?
+            res.status(409).json({ message: 'User already registered ! Please Login.'});
         });
 }
 

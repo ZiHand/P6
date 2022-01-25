@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose          = require('mongoose');
+const uniqueValidator   = require('mongoose-unique-validator');
 
 // ===================================================
 //                      Schema
@@ -9,6 +10,9 @@ const userSchema = mongoose.Schema(
     password    : { type: String, required: true }, // Must Be Hashed
 });
   
+// Apply the uniqueValidator plugin to userSchema.
+// WHY IF COMMENTED IT STILL WORK ?!!?
+userSchema.plugin(uniqueValidator);
 
 // ===================================================
 //                      Export

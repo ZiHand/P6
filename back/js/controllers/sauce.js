@@ -70,7 +70,8 @@ exports.getSauce = (req, res, next) =>
 // ===================================================
 exports.updateSauce = (req, res, next) => 
 {
-    let reqSauce = null;
+    let badStatus   = 404;
+    let errorMsg    = "Sauce not found !";
 
     // Find Sauce in db
     Sauce.findOne({ _id: req.params.id })
@@ -78,6 +79,15 @@ exports.updateSauce = (req, res, next) =>
         {
             if (sauce)
             {
+                if (req.body.userId !== sauce.userId)
+                {
+                    badStatus = 403;
+                    errorMsg = " unauthorized request";
+                    throw(errorMsg);
+                }
+
+                let reqSauce = null;
+
                 if (!req.file)
                 {
                     // Use Json
@@ -101,9 +111,13 @@ exports.updateSauce = (req, res, next) =>
                 }
 
                 reqSauce._id = req.params.id;
-            }
 
-            return reqSauce;
+                return reqSauce;
+            }
+            else
+            {
+                return null;
+            }            
         })
         .then(sauce =>
         {
@@ -111,7 +125,7 @@ exports.updateSauce = (req, res, next) =>
                 .then(() => res.status(200).json({ message: 'Sauce modified !'}))
                 .catch(error => res.status(400).json({ message: 'Sauce modification FAILED !' }));
         })
-        .catch(error => res.status(404).json({ error }));
+        .catch(error => res.status(badStatus).json({ message: errorMsg }));
 }
 
 // ===================================================
