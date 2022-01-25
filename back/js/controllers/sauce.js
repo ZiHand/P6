@@ -49,26 +49,50 @@ exports.getSauce = (req, res, next) =>
 // ===================================================
 exports.updateSauce = (req, res, next) => 
 {
-    let sauce = null;
+    let reqSauce = null;
 
-    //console.log(req.body);
+    // Find Sauce in db
+    Sauce.findOne({ _id: req.params.id })
+        .then(sauce => 
+        {
+            if (sauce)
+            {
+                if (!req.file)
+                {
+                    // Use Json
+                    reqSauce = new Sauce({...req.body});
 
-    if (!req.file)
-    {
-        // Use Json
-        sauce = new Sauce({...req.body});
-    }
-    else
-    {
-        sauce           = new Sauce(JSON.parse(req.body.sauce));
-        sauce.imageUrl  = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-    }
+                    reqSauce.usersLiked    = sauce.usersLiked;
+                    reqSauce.usersDisliked = sauce.usersDisliked;
+                    reqSauce.likes         = sauce.likes;
+                    reqSauce.dislikes      = sauce.dislikes;
+                }
+                else
+                {
+                    reqSauce               = new Sauce(JSON.parse(req.body.sauce));
+                    reqSauce.imageUrl      = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+                    reqSauce.usersLiked    = sauce.usersLiked;
+                    reqSauce.usersDisliked = sauce.usersDisliked;
+                    reqSauce.likes         = sauce.likes;
+                    reqSauce.dislikes      = sauce.dislikes;
+                }
 
-    sauce._id = req.params.id;
+                reqSauce._id = req.params.id;
+            }
 
-    Sauce.updateOne({ _id: req.params.id }, sauce)
-        .then(() => res.status(200).json({ message: 'Sauce modified !'}))
-        .catch(error => res.status(400).json({ error }));
+            return reqSauce;
+        })
+        .then(sauce =>
+        {
+            Sauce.updateOne({ _id: req.params.id }, sauce)
+                .then(() => res.status(200).json({ message: 'Sauce modified !'}))
+                .catch(error => res.status(400).json({ message: 'Sauce modification FAILED !' }));
+        })
+        .catch(error => res.status(404).json({ error }));
+
+    
+
+    
 }
 
 // ===================================================
