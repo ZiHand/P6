@@ -1,4 +1,25 @@
 const Sauce = require('../models/sauce');
+const fs    = require("fs");
+
+// ===================================================
+// deleteImage
+// ===================================================
+function deleteImage(url)
+{
+    let indexOf = url.lastIndexOf("/") + 1;
+    let file    = __dirname + "/../../images/" + url.substring(indexOf, url.length);
+    
+    try 
+    {
+        fs.unlinkSync(file);
+        console.log("Deleted file : " + file);
+    } 
+    catch (error) 
+    {
+        console.log("Unable to delete : " + file);
+    }
+    
+}
 
 // ===================================================
 // addSauce
@@ -60,8 +81,7 @@ exports.updateSauce = (req, res, next) =>
                 if (!req.file)
                 {
                     // Use Json
-                    reqSauce = new Sauce({...req.body});
-
+                    reqSauce               = new Sauce({...req.body});
                     reqSauce.usersLiked    = sauce.usersLiked;
                     reqSauce.usersDisliked = sauce.usersDisliked;
                     reqSauce.likes         = sauce.likes;
@@ -75,6 +95,9 @@ exports.updateSauce = (req, res, next) =>
                     reqSauce.usersDisliked = sauce.usersDisliked;
                     reqSauce.likes         = sauce.likes;
                     reqSauce.dislikes      = sauce.dislikes;
+
+                    // should remove old image ?
+                    deleteImage(sauce.imageUrl);
                 }
 
                 reqSauce._id = req.params.id;
@@ -89,10 +112,6 @@ exports.updateSauce = (req, res, next) =>
                 .catch(error => res.status(400).json({ message: 'Sauce modification FAILED !' }));
         })
         .catch(error => res.status(404).json({ error }));
-
-    
-
-    
 }
 
 // ===================================================
@@ -173,7 +192,6 @@ exports.likeSauce = (req, res, next) =>
             // Update
             if (shouldUpdate)
             {
-                console.log("userId " + req.body.userId + " updating sauce.");
                 Sauce.updateOne({ _id: req.params.id }, sauce)
                     .then(() => res.status(200).json({ message: 'Like / dislike sauce done !'}))
                     .catch(error => res.status(400).json({ message: 'Like / dislike sauce FAILED !' }));
