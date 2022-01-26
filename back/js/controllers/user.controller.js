@@ -2,6 +2,8 @@ const User      = require('../models/user.model');
 const jwt       = require('jsonwebtoken');
 const bcrypt    = require("bcrypt");
 
+require('dotenv').config({path: './config/.env'});
+
 // ===================================================
 // createUser
 // ===================================================
@@ -35,10 +37,6 @@ exports.logUser = (req, res, next) =>
     {
         return res.status(400).json({ error: 'Login error !'});
     }
-
-    // Not working for now
-    //const mail = CryptoJS.AES.encrypt(req.body.email, process.env.SECRET_KEY).toString();
-    //console.log(retreiveUserEmail(mail));
 
     User.findOne({ email: req.body.email })
         .then(function(user) 
