@@ -1,11 +1,6 @@
 const express           = require('express');
-const mongoose          = require('mongoose');
 const userRoutes        = require('./routes/user');
 const sauceRoutes       = require('./routes/sauce');
-
-// should not been there
-const url               = 'mongodb+srv://ZiggyHand:zigman2014@cluster0.znqej.mongodb.net/Piiquante?retryWrites=true&w=majority';
-
 
 
 // ===================================================
@@ -53,28 +48,4 @@ app.post('/api/sauces/:id/like', sauceRoutes);
 
 
 // ===================================================
-
-// ===================================================
-//                  Database connection
-// ===================================================
-function databaseConnet()
-{
-    if (url !== '')
-    {
-        mongoose.connect(url, {useNewUrlParser: true, useUnifiedTopology: true, keepAlive: true, keepAliveInitialDelay: 300000})
-        .then(() => console.log('Connection to Piiquante Database OK'))
-        .catch((err) => console.log('Connection to Piiquante Database FAILED ! ' + err)); 
-
-        //Get the default connection
-        var db = mongoose.connection;
-        //Bind connection to error event (to get notification of connection errors)
-        db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-    } 
-}
-
-// ===================================================
-//                  Main Run
-// ===================================================
-databaseConnet();
-
 module.exports = app;

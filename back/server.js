@@ -1,6 +1,7 @@
 const http  = require('http');
 const app   = require('./js/app');
-const _port = '3000';
+require('dotenv').config({path: './config/.env'});
+require('./config/db');
 
 // ===================================================
 //                  normalizePort
@@ -53,7 +54,7 @@ const errorHandler = error =>
 // ===================================================
 //                  Server Wake
 // ===================================================
-const port = normalizePort(process.env.PORT || _port);
+const port = normalizePort(process.env.PORT);
 app.set('port', port);
 
 const server = http.createServer(app);

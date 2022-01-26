@@ -9,6 +9,7 @@ npm install bcrypt
 npm install crypto-js
 npm install jsonwebtoken
 npm install multer
+npm install dotenv --save
 
 ///////////////////////////////////////////////////
 // Front start
