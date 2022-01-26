@@ -12,7 +12,6 @@ function deleteImage(url)
     try 
     {
         fs.unlinkSync(file);
-        console.log("Deleted file : " + file);
     } 
     catch (error) 
     {
@@ -101,7 +100,7 @@ exports.updateSauce = (req, res, next) =>
                     if (JSON.parse(req.body.sauce).userId !== sauce.userId)
                     {
                         badStatus = 403;
-                        errorMsg = " unauthorized request";
+                        errorMsg = "unauthorized request";
                         throw(errorMsg);
                     }
 
@@ -164,7 +163,6 @@ exports.likeSauce = (req, res, next) =>
                 // Check if user have alredy liked ->then
                 if (!sauce.usersLiked.find(element => element === req.body.userId))
                 {
-                    console.log("userId " + req.body.userId + " liked.");
                     sauce.usersLiked.push(req.body.userId);
                     shouldUpdate = true;
                 }
@@ -174,7 +172,6 @@ exports.likeSauce = (req, res, next) =>
                 // Check if user have alredy disliked ->then
                 if (!sauce.usersDisliked.find(element => element === req.body.userId))
                 {
-                    console.log("userId " + req.body.userId + " disliked.");
                     sauce.usersDisliked.push(req.body.userId);
                     shouldUpdate = true;
                 }
@@ -187,7 +184,6 @@ exports.likeSauce = (req, res, next) =>
                 {
                     if (sauce.usersLiked[i] === req.body.userId) 
                     { 
-                        console.log("userId " + req.body.userId + " like reset.");
                         sauce.usersLiked.splice(i, 1);
                         shouldUpdate = true;
                         break;
@@ -196,7 +192,6 @@ exports.likeSauce = (req, res, next) =>
 
                 for( var i = 0; i < sauce.usersDisliked.length; i++)
                 { 
-                    console.log("userId " + req.body.userId + " dislike reset.");
                     if ( sauce.usersDisliked[i] === req.body.userId) 
                     { 
                         sauce.usersDisliked.splice(i, 1);
