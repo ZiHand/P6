@@ -6,7 +6,6 @@ npm install express
 npm install mongoose
 npm install mongoose-unique-validator
 npm install bcrypt
-npm install crypto-js
 npm install jsonwebtoken
 npm install multer
 npm install dotenv --save
@@ -23,4 +22,4 @@ npm run start
 ///////////////////////////////////////////////////
 cd back
 npm install
-nodemon server
+npm start

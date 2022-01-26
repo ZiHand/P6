@@ -1,26 +1,6 @@
-const User          = require('../models/user');
-var jwt             = require('jsonwebtoken');
-const bcrypt        = require("bcrypt");
-var CryptoJS        = require("crypto-js");
-const secretKey     = "Hypolite_Est_Un_Chien_Qui_Mange_Trop!";
-const saltRounds    = 13;
-
-// ===================================================
-// retreiveUserEmail // NOT USED FOR NOW
-// ===================================================
-function retreiveUserEmail(email)
-{
-    var bytes = CryptoJS.AES.decrypt(email, secretKey);
-    return bytes.toString(CryptoJS.enc.Utf8);
-}
-
-// ===================================================
-// retreiveUserEmail
-// ===================================================
-function isUserExist(user)
-{
-    return false;
-}
+const User      = require('../models/user.model');
+const jwt       = require('jsonwebtoken');
+const bcrypt    = require("bcrypt");
 
 // ===================================================
 // createUser
@@ -33,16 +13,6 @@ exports.createUser = (req, res, next) =>
     }
 
     const user = new User({...req.body});
-
-    // Encrypt
-    //user.email      = bcrypt.hashSync(req.body.password, saltRounds);
-    user.password   = bcrypt.hashSync(req.body.password, saltRounds);
-
-    // Check DB if user already exist
-    if (isUserExist(user)) // Not used for now as Unique is used.
-    {
-        return res.status(409).json({ message: 'User already registered ! Please Login.'});
-    }
 
     // Register to DB
     user.save()
@@ -67,7 +37,7 @@ exports.logUser = (req, res, next) =>
     }
 
     // Not working for now
-    //const mail = CryptoJS.AES.encrypt(req.body.email, secretKey).toString();
+    //const mail = CryptoJS.AES.encrypt(req.body.email, process.env.SECRET_KEY).toString();
     //console.log(retreiveUserEmail(mail));
 
     User.findOne({ email: req.body.email })
@@ -86,7 +56,7 @@ exports.logUser = (req, res, next) =>
                         return res.status(401).json({ error: 'Incorrect pasword !' });
                     }
                 
-                    res.status(201).json({userId: user.email, token: jwt.sign({ userId: user.email }, secretKey, { expiresIn: '24h' })});
+                    res.status(201).json({userId: user.email, token: jwt.sign({ userId: user.email }, process.env.SECRET_KEY, { expiresIn: '24h' })});
                 })
               .catch(error => res.status(500).json({ error }));
         })

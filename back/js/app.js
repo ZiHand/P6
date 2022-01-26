@@ -1,6 +1,6 @@
 const express           = require('express');
-const userRoutes        = require('./routes/user');
-const sauceRoutes       = require('./routes/sauce');
+const userRoutes        = require('./routes/user.routes');
+const sauceRoutes       = require('./routes/sauce.routes');
 
 
 // ===================================================
@@ -36,15 +36,15 @@ app.use((req, res, next) =>
 // ===================================================
 app.use('/images', express.static("images"));
 
-app.post('/api/auth/signup', userRoutes);
-app.post('/api/auth/login', userRoutes);
+app.use('/api/auth', userRoutes);
+app.use('/api/auth', userRoutes);
 
-app.get('/api/sauces', sauceRoutes);
-app.get('/api/sauces/:id', sauceRoutes);
-app.post('/api/sauces', sauceRoutes);
-app.put('/api/sauces/:id', sauceRoutes);
-app.delete('/api/sauces/:id', sauceRoutes);
-app.post('/api/sauces/:id/like', sauceRoutes);
+app.use('/api', sauceRoutes);
+app.use('/api/sauces/:id', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces/:id', sauceRoutes);
+app.use('/api/sauces/:id', sauceRoutes);
+app.use('/api/sauces/:id/like', sauceRoutes);
 
 
 // ===================================================
