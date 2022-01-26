@@ -54,7 +54,7 @@ exports.logUser = (req, res, next) =>
                         return res.status(401).json({ error: 'Incorrect pasword !' });
                     }
                 
-                    res.status(201).json({userId: user.email, token: jwt.sign({ userId: user.email }, process.env.SECRET_KEY, { expiresIn: '24h' })});
+                    res.status(201).json({userId: user._id, token: jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '24h' })});
                 })
               .catch(error => res.status(500).json({ error }));
         })

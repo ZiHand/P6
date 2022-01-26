@@ -31,7 +31,6 @@ exports.addSauce = (req, res, next) =>
         return res.status(400).json({ message: 'Creating sauce error !'});
     }
 
-
     const sauce         = new Sauce(JSON.parse(req.body.sauce));
     sauce.imageUrl      = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
     sauce.likes         = 0;
@@ -79,17 +78,17 @@ exports.updateSauce = (req, res, next) =>
         {
             if (sauce)
             {
-                if (req.body.userId !== sauce.userId)
-                {
-                    badStatus = 403;
-                    errorMsg = " unauthorized request";
-                    throw(errorMsg);
-                }
-
                 let reqSauce = null;
 
                 if (!req.file)
                 {
+                    if (req.body.userId !== sauce.userId)
+                    {
+                        badStatus = 403;
+                        errorMsg = " unauthorized request";
+                        throw(errorMsg);
+                    }
+
                     // Use Json
                     reqSauce               = new Sauce({...req.body});
                     reqSauce.usersLiked    = sauce.usersLiked;
@@ -99,6 +98,13 @@ exports.updateSauce = (req, res, next) =>
                 }
                 else
                 {
+                    if (JSON.parse(req.body.sauce).userId !== sauce.userId)
+                    {
+                        badStatus = 403;
+                        errorMsg = " unauthorized request";
+                        throw(errorMsg);
+                    }
+
                     reqSauce               = new Sauce(JSON.parse(req.body.sauce));
                     reqSauce.imageUrl      = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
                     reqSauce.usersLiked    = sauce.usersLiked;
@@ -110,7 +116,7 @@ exports.updateSauce = (req, res, next) =>
                     deleteImage(sauce.imageUrl);
                 }
 
-                reqSauce._id = req.params.id;
+                reqSauce._id = sauce._id;
 
                 return reqSauce;
             }
