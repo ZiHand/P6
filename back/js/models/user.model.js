@@ -7,7 +7,7 @@ const bcrypt            = require("bcrypt");
 // ===================================================
 const userSchema = mongoose.Schema(
 {
-    email       : { type: String, required: true, unique: true, trim: true }, // Should Not Be crypted ? crypto.js ou maskdata
+    email       : { type: String, required: true, unique: true, trim: true },
     password    : { type: String, required: true }, // Must Be Hashed
 });
   
