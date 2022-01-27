@@ -33,7 +33,7 @@ exports.createUser = (req, res, next) =>
 // ===================================================
 exports.logUser = (req, res, next) => 
 {
-    if (!req.body.email || !req.body.password) 
+    if (!req.body.email || !req.body.password)
     {
         return res.status(400).json({ error: 'Login error !'});
     }
@@ -56,7 +56,7 @@ exports.logUser = (req, res, next) =>
                 
                     res.status(201).json({userId: user._id, token: jwt.sign({ userId: user._id }, process.env.SECRET_KEY, { expiresIn: '24h' })});
                 })
-              .catch(error => res.status(500).json({ error }));
+                .catch(error => res.status(500).json({ error }));
         })
         .catch(error =>
         {

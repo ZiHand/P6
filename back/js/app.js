@@ -39,12 +39,12 @@ app.use('/images', express.static("images"));
 app.use('/api/auth', userRoutes);
 app.use('/api/auth', userRoutes);
 
-app.use('/api', sauceRoutes);
-app.use('/api/sauces/:id', sauceRoutes);
 app.use('/api/sauces', sauceRoutes);
-app.use('/api/sauces/:id', sauceRoutes);
-app.use('/api/sauces/:id', sauceRoutes);
-app.use('/api/sauces/:id/like', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
+app.use('/api/sauces', sauceRoutes);
 
 
 // ===================================================
