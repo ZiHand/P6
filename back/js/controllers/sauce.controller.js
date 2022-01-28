@@ -138,6 +138,18 @@ exports.updateSauce = (req, res, next) =>
 // ===================================================
 exports.deleteSauce = (req, res, next) => 
 {
+    // find sauce image
+    Sauce.findOne({ _id: req.params.id })
+        .then(sauce => 
+        {
+            if (sauce)
+            {
+                deleteImage(sauce.imageUrl);
+            }
+        })
+        .catch(error => res.status(400).json({ error }));
+
+
     Sauce.deleteOne({ _id: req.params.id })
         .then(() => res.status(200).json({ message: 'Sauce deleted !'}))
         .catch(error => res.status(400).json({ error }));
