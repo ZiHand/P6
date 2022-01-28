@@ -2,9 +2,9 @@ const Sauce = require('../models/sauce.model');
 const fs    = require("fs");
 
 // ===================================================
-// deleteImage
+// deleteImage // put async
 // ===================================================
-function deleteImage(url)
+async function deleteImage(url)
 {
     let indexOf = url.lastIndexOf("/") + 1;
     let file    = __dirname + "/../../images/" + url.substring(indexOf, url.length);
@@ -34,8 +34,8 @@ exports.addSauce = (req, res, next) =>
     sauce.imageUrl      = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
     sauce.likes         = 0;
     sauce.dislikes      = 0;
-    sauce.usersLiked    = 0;
-    sauce.usersDisliked = 0;
+    sauce.usersLiked    = [];
+    sauce.usersDisliked = [];
 
     // Register to DB
     sauce.save()
@@ -172,6 +172,7 @@ exports.likeSauce = (req, res, next) =>
                 // Check if user have alredy disliked ->then
                 if (!sauce.usersDisliked.find(element => element === req.body.userId))
                 {
+                    
                     sauce.usersDisliked.push(req.body.userId);
                     shouldUpdate = true;
                 }
@@ -207,6 +208,7 @@ exports.likeSauce = (req, res, next) =>
             // Update
             if (shouldUpdate)
             {
+                console.log(sauce);
                 Sauce.updateOne({ _id: req.params.id }, sauce)
                     .then(() => res.status(200).json({ message: 'Like / dislike sauce done !'}))
                     .catch(error => res.status(400).json({ message: 'Like / dislike sauce FAILED !' }));

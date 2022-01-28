@@ -16,7 +16,7 @@ npm install
 npm start
 
 ///////////////////////////////////////////////////
-// Used package for Back (automatically installed)
+// Used package for Back (automatically installed) please detail
 ///////////////////////////////////////////////////
 nodemon
 express
@@ -25,4 +25,4 @@ mongoose-unique-validator
 bcrypt
 jsonwebtoken
 multer
-dotenv --save
+dotenv

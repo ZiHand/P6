@@ -13,7 +13,7 @@ const userSchema = mongoose.Schema(
   
 // Apply the uniqueValidator plugin to userSchema.
 // WHY IF COMMENTED IT STILL WORK ?!!?
-userSchema.plugin(uniqueValidator);
+//userSchema.plugin(uniqueValidator);
 
 // Encrypt password before save
 userSchema.pre("save", async function(next)
@@ -26,4 +26,5 @@ userSchema.pre("save", async function(next)
 // ===================================================
 //                      Export
 // ===================================================
+// if table not exist, automatic creation
 module.exports = mongoose.model('User', userSchema, 'users');

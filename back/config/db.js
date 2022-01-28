@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+require('dotenv').config({path: './config/.env'});
 
 mongoose.connect('mongodb+srv://' + process.env.DB_USER_PASS + '@cluster0.znqej.mongodb.net/Piiquante?retryWrites=true&w=majority', 
 {
