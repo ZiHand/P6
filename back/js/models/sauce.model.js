@@ -22,4 +22,6 @@ const sauceSchema = mongoose.Schema(
 // ===================================================
 //                      Export
 // ===================================================
+// The third parameter to mongoose.model is an explicit collection name.
+// If the collection des not exist, it will create it.
 module.exports = mongoose.model('Sauce', sauceSchema, 'sauces');

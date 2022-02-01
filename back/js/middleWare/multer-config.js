@@ -25,4 +25,5 @@ const storage = multer.diskStorage(
   }
 });
 
+// It means we accept a single file with the field name image.
 module.exports = multer({storage: storage}).single('image');
